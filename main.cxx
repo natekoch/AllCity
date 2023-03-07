@@ -39,7 +39,10 @@ using std::cerr;
 
 class RenderManager;
 
+void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
+
 void SetUpLevel(RenderManager &);
+void SetUpCharacter(RenderManager &);
 
 const char *GetVertexShader();
 const char *GetFragmentShader();
@@ -370,7 +373,7 @@ RenderManager::SetUpWindowAndShaders()
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  window = glfwCreateWindow(1080, 1080, "All City", NULL, NULL);
+  window = glfwCreateWindow(800, 800, "All City", NULL, NULL);
   if (!window) {
     fprintf(stderr, "ERROR: could not open window with GLFW3\n");
     glfwTerminate();
@@ -550,6 +553,9 @@ int main()
   RenderManager rm;
   GLFWwindow *window = rm.GetWindow();
 
+  glfwSetKeyCallback(window, KeyCallback);
+  glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+
   glm::vec3 origin(0, 0, 0);
   glm::vec3 up(0, 1, 0);
 
@@ -562,6 +568,8 @@ int main()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     SetUpLevel(rm);
+
+    SetUpCharacter(rm);
 
     glfwPollEvents();
 
@@ -606,6 +614,16 @@ SetUpLevel(RenderManager &rm)
 
   rm.SetColor(1,0,0);
   rm.Render(RenderManager::CUBE, identity*translate);
+}
+
+void
+SetUpCharacter(RenderManager &rm)
+{
+  glm::mat4 identity(1.0f);
+  glm::mat4 translate = TranslateMatrix(0, 0, 0);
+
+  rm.SetColor(0, 1, 0);
+  rm.Render(RenderManager::SPHERE, identity*translate);
 }
 
 const char *
@@ -654,4 +672,33 @@ GetFragmentShader()
           "}\n"
          );
    return fragmentShader;
+}
+
+void
+KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+  if (key == GLFW_KEY_SPACE && (action == GLFW_PRESS || action == GLFW_REPEAT))
+  {
+    cerr << "SPACE" << endl;
+  }
+
+  if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))
+  {
+    cerr << "A" << endl;
+  }
+
+  if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT))
+  {
+    cerr << "D" << endl;
+  }
+
+  if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT))
+  {
+    cerr << "W" << endl;
+  }
+
+  if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT))  
+  {
+    cerr << "S" << endl;
+  }
 }
